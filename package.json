@@ -1,0 +1,328 @@
+{
+  "name": "lamb-toolsuite",
+  "displayName": "LLM-Assisted Code Migration Bot (LAMB) Toolsuite for Visual Studio Code",
+  "description": "LLM-Assisted Code Migration Bot (LAMB) Toolsuite for Visual Studio Code.",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Other"
+  ],
+  "main": "./src/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "lamb-explorer",
+          "title": "LAMB Toolsuite",
+          "icon": "$(hubot)"
+        }
+      ]
+    },
+    "views": {
+      "lamb-explorer": [
+        {
+          "type": "webview",
+          "id": "lamb-toolsuite.mapView",
+          "name": "Generate Mapping Table"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "lamb-toolsuite.migrate",
+        "title": "Migrate with LAMB..."
+      },
+      {
+        "command": "lamb-toolsuite.addHighlight",
+        "title": "Highlight with LAMB..."
+      },
+      {
+        "command": "lamb-toolsuite.clearHighlights",
+        "title": "Clear LAMB Highlights..."
+      },
+      {
+        "command": "lamb-toolsuite.acceptMigration",
+        "title": "Accept Migration Changes",
+        "icon": "$(check)"
+      },
+      {
+        "command": "lamb-toolsuite.discardMigration",
+        "title": "Discard Migration Changes",
+        "icon": "$(x)"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "when": "editorTextFocus && !inTerminal && editorLangId != ''",
+          "command": "lamb-toolsuite.migrate",
+          "group": "navigation"
+        },
+        {
+          "command": "lamb-toolsuite.acceptMigration",
+          "when": "lambMigrationActive",
+          "group": "navigation@1"
+        },
+        {
+          "command": "lamb-toolsuite.discardMigration",
+          "when": "lambMigrationActive",
+          "group": "navigation@2"
+        }
+      ],
+      "editor/context": [
+        {
+          "when": "editorTextFocus && editorHasSelection && !inTerminal && editorLangId != ''",
+          "command": "lamb-toolsuite.addHighlight",
+          "group": "lamb-group@1"
+        },
+        {
+          "when": "editorTextFocus && !inTerminal && editorLangId != ''",
+          "command": "lamb-toolsuite.migrate",
+          "group": "lamb-group@2"
+        },
+        {
+          "when": "editorTextFocus && !inTerminal && editorLangId != ''",
+          "command": "lamb-toolsuite.clearHighlights",
+          "group": "lamb-group@3"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "LAMB Configuration",
+      "properties": {
+        "lamb.general.litellm.enabled": {
+          "type": "boolean",
+          "default": false,
+          "order": 1,
+          "markdownDescription": "Enable LiteLLM Proxy Server."
+        },
+        "lamb.general.litellm.host": {
+          "type": "string",
+          "default": "127.0.0.1",
+          "order": 2,
+          "markdownDescription": "Host IP Address for the LiteLLM Proxy Server."
+        },
+        "lamb.general.litellm.port": {
+          "type": "integer",
+          "default": 4000,
+          "order": 3,
+          "markdownDescription": "Port for the LiteLLM Proxy Server."
+        },
+        "lamb.general.litellm.configFile": {
+          "type": "string",
+          "default": "",
+          "order": 4,
+          "markdownDescription": "Path to a LiteLLM Proxy Server YAML Configuration File."
+        },
+        "lamb.tasks.mapping.multiAgent": {
+          "type": "boolean",
+          "default": false,
+          "order": 5,
+          "markdownDescription": "Enable Multi-Agent Consensus Resolution."
+        },
+        "lamb.general.litellm.agents.default": {
+          "type": "boolean",
+          "default": false,
+          "order": 6,
+          "markdownDescription": "Enable the LiteLLM Proxy Server for the Default Fallback Agent."
+        },
+        "lamb.tasks.default": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {
+            "model": "Qwen/Qwen3-30B-A3B-Instruct-2507",
+            "base_url": "http://127.0.0.1:1234/v1"
+          },
+          "order": 7,
+          "markdownDescription": "Dynamic Dictionary for Default Fallback Agent Initialization Parameters (LangChain's `ChatOpenAI` Parameters + `requests_per_minute` and `tokens_per_minute`)."
+        },
+        "lamb.general.litellm.agents.mapping.discovery": {
+          "type": "boolean",
+          "default": false,
+          "order": 8,
+          "markdownDescription": "Enable the LiteLLM Proxy Server for the Discovery Agent."
+        },
+        "lamb.tasks.mapping.discovery": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "order": 9,
+          "markdownDescription": "Dynamic Key-Value Pairs for Discovery Agent Initialization Parameters (LangChain's `ChatOpenAI` Parameters + `requests_per_minute` and `tokens_per_minute`)."
+        },
+        "lamb.tasks.mapping.discoveryBatchSize": {
+          "type": "integer",
+          "default": 20,
+          "order": 10,
+          "markdownDescription": "Batch Size for the Discovery Agent Execution Window."
+        },
+        "lamb.general.litellm.agents.mapping.embedding": {
+          "type": "boolean",
+          "default": false,
+          "order": 11,
+          "markdownDescription": "Enable the LiteLLM Proxy Server for the Embedding Agent."
+        },
+        "lamb.tasks.mapping.embedding": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {
+            "model": "Qwen/Qwen3-Embedding-8B",
+            "base_url": "http://127.0.0.1:1234/v1"
+          },
+          "order": 12,
+          "markdownDescription": "Dynamic Key-Value Pairs for Vector Embedding Agent Initialization Parameters (LangChain's `ChatOpenAI` Parameters + `requests_per_minute` and `tokens_per_minute`)."
+        },
+        "lamb.general.litellm.agents.mapping.extraction": {
+          "type": "boolean",
+          "default": false,
+          "order": 13,
+          "markdownDescription": "Enable the LiteLLM Proxy Server for the Extraction Agent."
+        },
+        "lamb.tasks.mapping.extraction": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "order": 14,
+          "markdownDescription": "Dynamic Key-Value Pairs for Extraction Agent Initialization Parameters (LangChain's `ChatOpenAI` Parameters + `requests_per_minute` and `tokens_per_minute`)."
+        },
+        "lamb.general.litellm.agents.mapping.generalResolution": {
+          "type": "boolean",
+          "default": false,
+          "order": 15,
+          "markdownDescription": "Enable the LiteLLM Proxy Server for the General Resolution Agent."
+        },
+        "lamb.tasks.mapping.generalResolution": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "order": 16,
+          "markdownDescription": "Dynamic Key-Value Pairs for General Resolution Consensus Agent Initialization Parameters (LangChain's `ChatOpenAI` Parameters + `requests_per_minute` and `tokens_per_minute`)."
+        },
+        "lamb.general.litellm.agents.mapping.lexicalResolution": {
+          "type": "boolean",
+          "default": false,
+          "order": 17,
+          "markdownDescription": "Enable the LiteLLM Proxy Server for the Lexical Resolution Agent."
+        },
+        "lamb.tasks.mapping.lexicalResolution": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "order": 18,
+          "markdownDescription": "Dynamic Key-Value Pairs for Lexical Resolution Consensus Agent Initialization Parameters (LangChain's `ChatOpenAI` Parameters + `requests_per_minute` and `tokens_per_minute`)."
+        },
+        "lamb.general.litellm.agents.mapping.semanticResolution": {
+          "type": "boolean",
+          "default": false,
+          "order": 19,
+          "markdownDescription": "Enable the LiteLLM Proxy Server for the Semantic Resolution Agent."
+        },
+        "lamb.tasks.mapping.semanticResolution": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "order": 20,
+          "markdownDescription": "Dynamic Key-Value Pairs for Semantic Resolution Consensus Agent Initialization Parameters (LangChain's `ChatOpenAI` Parameters + `requests_per_minute` and `tokens_per_minute`)."
+        },
+        "lamb.tasks.mapping.resolverBatchSize": {
+          "type": "integer",
+          "default": 20,
+          "order": 21,
+          "markdownDescription": "Batch Size for the Resolver Agent Execution Window."
+        },
+        "lamb.tasks.mapping.checkpointDatabasePath": {
+          "type": "string",
+          "default": "~/.lamb/map_checkpoint.db",
+          "order": 22,
+          "markdownDescription": "Path to the SQLite 3 Database File to use for LangGraph Checkpoints."
+        },
+        "lamb.tasks.mapping.stageOutputDir": {
+          "type": "string",
+          "default": "",
+          "order": 23,
+          "markdownDescription": "Output Directory for the Stage(s) JSON File(s)."
+        },
+        "lamb.tasks.mapping.tmpDir": {
+          "type": "string",
+          "default": "~/.lamb/tmp",
+          "order": 24,
+          "markdownDescription": "Temporary File(s) Directory."
+        },
+        "lamb.tasks.migration.summarizationThreshold": {
+          "type": "integer",
+          "default": 2000,
+          "order": 25,
+          "markdownDescription": "Token Threshold for Summarization."
+        },
+        "lamb.general.litellm.agents.migration.detection": {
+          "type": "boolean",
+          "default": false,
+          "order": 26,
+          "markdownDescription": "Enable the LiteLLM Proxy Server for the Programming Language Detection Agent."
+        },
+        "lamb.tasks.migration.detection": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "order": 27,
+          "markdownDescription": "Dynamic Key-Value Pairs for Programming Language Detection Agent Initialization Parameters (LangChain's `ChatOpenAI` Parameters + `requests_per_minute` and `tokens_per_minute`)."
+        },
+        "lamb.general.litellm.agents.migration.migration": {
+          "type": "boolean",
+          "default": false,
+          "order": 28,
+          "markdownDescription": "Enable the LiteLLM Proxy Server for the Migration Agent."
+        },
+        "lamb.tasks.migration.migration": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "order": 29,
+          "markdownDescription": "Dynamic Key-Value Pairs for Primary Migration Agent Initialization Parameters (LangChain's `ChatOpenAI` Parameters + `requests_per_minute` and `tokens_per_minute`)."
+        },
+        "lamb.general.litellm.agents.migration.summarization": {
+          "type": "boolean",
+          "default": false,
+          "order": 30,
+          "markdownDescription": "Enable the LiteLLM Proxy Server for the Summarization Agent."
+        },
+        "lamb.tasks.migration.summarization": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "order": 31,
+          "markdownDescription": "Dynamic Key-Value Pairs for Summarization Agent Initialization Parameters (LangChain's `ChatOpenAI` Parameters + `requests_per_minute` and `tokens_per_minute`)."
+        },
+        "lamb.tasks.migration.maxAttempts": {
+          "type": "integer",
+          "default": 3,
+          "order": 32,
+          "markdownDescription": "Maximum Number of Migration Attempts."
+        },
+        "lamb.general.verbose": {
+          "type": "boolean",
+          "default": false,
+          "order": 33,
+          "markdownDescription": "Enable Verbose Output."
+        }
+      }
+    }
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0"
+  }
+}

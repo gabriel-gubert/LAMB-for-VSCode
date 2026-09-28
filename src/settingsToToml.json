@@ -1,0 +1,41 @@
+{
+  "general.verbose": "general.verbose",
+  "general.litellm.enabled": "general.litellm.enabled",
+  "general.litellm.host": "general.litellm.host",
+  "general.litellm.port": "general.litellm.port",
+  "general.litellm.configFile": "general.litellm.config_file",
+
+  "general.litellm.agents.default": "tasks.default.use_litellm",
+  "general.litellm.agents.mapping.discovery": "tasks.mapping.discovery.use_litellm",
+  "general.litellm.agents.mapping.embedding": "tasks.mapping.embedding.use_litellm",
+  "general.litellm.agents.mapping.extraction": "tasks.mapping.extraction.use_litellm",
+  "general.litellm.agents.mapping.generalResolution": "tasks.mapping.general_resolution.use_litellm",
+  "general.litellm.agents.mapping.lexicalResolution": "tasks.mapping.lexical_resolution.use_litellm",
+  "general.litellm.agents.mapping.semanticResolution": "tasks.mapping.semantic_resolution.use_litellm",
+  "general.litellm.agents.migration.detection": "tasks.migration.detection.use_litellm",
+  "general.litellm.agents.migration.migration": "tasks.migration.migration.use_litellm",
+  "general.litellm.agents.migration.summarization": "tasks.migration.summarization.use_litellm",
+
+  "tasks.default": "tasks.default",
+
+  "tasks.mapping.checkpointDatabasePath": "tasks.mapping.checkpoint_database_path",
+  "tasks.mapping.discoveryBatchSize": "tasks.mapping.discovery_batch_size",
+  "tasks.mapping.multiAgent": "tasks.mapping.multi_agent",
+  "tasks.mapping.resolverBatchSize": "tasks.mapping.resolver_batch_size",
+  "tasks.mapping.stageOutputDir": "tasks.mapping.stage_output_dir",
+  "tasks.mapping.tmpDir": "tasks.mapping.tmp_dir",
+
+  "tasks.mapping.discovery": "tasks.mapping.discovery",
+  "tasks.mapping.embedding": "tasks.mapping.embedding",
+  "tasks.mapping.extraction": "tasks.mapping.extraction",
+  "tasks.mapping.generalResolution": "tasks.mapping.general_resolution",
+  "tasks.mapping.lexicalResolution": "tasks.mapping.lexical_resolution",
+  "tasks.mapping.semanticResolution": "tasks.mapping.semantic_resolution",
+
+  "tasks.migration.summarizationThreshold": "tasks.migration.summarization_threshold",
+  "tasks.migration.maxAttempts": "tasks.migration.max_attempts",
+
+  "tasks.migration.detection": "tasks.migration.detection",
+  "tasks.migration.migration": "tasks.migration.migration",
+  "tasks.migration.summarization": "tasks.migration.summarization"
+}
