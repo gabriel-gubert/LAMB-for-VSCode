@@ -37,5 +37,6 @@
 
   "tasks.migration.detection": "tasks.migration.detection",
   "tasks.migration.migration": "tasks.migration.migration",
-  "tasks.migration.summarization": "tasks.migration.summarization"
+  "tasks.migration.summarization": "tasks.migration.summarization",
+  "tasks.migration.logprobs": "tasks.migration.logprobs"
 }
