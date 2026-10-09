@@ -313,10 +313,16 @@
           "order": 32,
           "markdownDescription": "Maximum Number of Migration Attempts."
         },
+        "lamb.tasks.migration.logprobs": {
+          "type": "boolean",
+          "default": true,
+          "order": 33,
+          "markdownDescription": "Enable Logprobs for Confidence Score Calculation."
+        },
         "lamb.general.verbose": {
           "type": "boolean",
           "default": false,
-          "order": 33,
+          "order": 34,
           "markdownDescription": "Enable Verbose Output."
         }
       }
