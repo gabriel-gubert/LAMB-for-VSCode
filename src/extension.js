@@ -168,6 +168,7 @@ async function activate(context) {
             const config = vscode.workspace.getConfiguration('lamb');
             const defaultThreshold = config.get('tasks.migration.summarizationThreshold', 2000);
             const currentVerbose = config.get('general.verbose', false);
+            const currentLogprobs = config.get('tasks.migration.logprobs', true);
 
             const currentSelection = editor.selection;
             const fullSourceCode = editor.document.getText();
@@ -207,6 +208,7 @@ async function activate(context) {
                 '--report', tempReportPath
             ];
             if (currentVerbose) cliArgs.push('--verbose');
+            if (currentLogprobs) cliArgs.push('--logprobs');
 
             // --- Extract, Filter, Truncate, and Re-index Highlights ---
             const savedRecords = workspaceState.get(`lamb.highlights.${editor.document.uri.toString()}`) || [];
