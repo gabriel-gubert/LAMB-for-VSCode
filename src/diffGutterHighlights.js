@@ -40,28 +40,34 @@ function renderRuleBlock(ruleScore) {
         const formattedDesc = ruleScore.description
             .trim()
             .split('\n')
-            .map(line => `> ${line}`)
+            .map(line => `> ${line.replace(/^ {4}/, '')}  `)
             .join('\n');
 
         block += `### Rule Description\n` +
             `${formattedDesc}\n\n`;
     }
 
-    block += `### Score & Detail\n\n` +
-        `| **Property** | **Value** |\n` +
-        `| :--- | :--- |\n` +
-        `| **Confidence** | **${(ruleScore.score * 100).toFixed(1)}%** (\`${ruleScore.level}\`) |\n` +
-        `| **Status** | \`${ruleScore.status || '<EMPTY>'}\` |\n` +
-        `| **Reason(s)** | \`${ruleScore.reason || '<EMPTY>'}\` |\n` +
-        `| **Operation(s)** | \`${ruleScore.operations || '<EMPTY>'}\` |\n\n`;
+    block += `---\n### Score & Detail\n\n` +
+        `* **Confidence:** **${(ruleScore.score * 100).toFixed(1)}%** (\`${ruleScore.level}\`)\n` +
+        `* **Status:** \`${ruleScore.status || '<EMPTY>'}\`\n` +
+        `* **Reason(s):** \`${ruleScore.reason || '<EMPTY>'}\`\n` +
+        `* **Operation(s):** \`${ruleScore.operations || '<EMPTY>'}\`\n\n`;
 
     if (ruleScore.input_snippet || ruleScore.output_snippet) {
         block += `---\n### Source Code Snippet(s)\n\n`;
         if (ruleScore.input_snippet) {
-            block += `**Input Snippet**\n\`\`\`\n${ruleScore.input_snippet}\n\`\`\`\n\n`;
+            const quotedInput = ruleScore.input_snippet
+                .split('\n')
+                .map(line => `> ${line}`)
+                .join('\n');
+            block += `**Input Snippet**\n> \`\`\`\n${quotedInput}\n> \`\`\`\n\n`;
         }
         if (ruleScore.output_snippet) {
-            block += `**Output Snippet**\n\`\`\`\n${ruleScore.output_snippet}\n\`\`\`\n\n`;
+            const quotedOutput = ruleScore.output_snippet
+                .split('\n')
+                .map(line => `> ${line}`)
+                .join('\n');
+            block += `**Output Snippet**\n> \`\`\`\n${quotedOutput}\n> \`\`\`\n\n`;
         }
     }
 
