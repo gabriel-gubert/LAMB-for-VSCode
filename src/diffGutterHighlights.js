@@ -52,7 +52,7 @@ function renderRuleBlock(ruleScore) {
         `* **Status:** \`${ruleScore.status || 'N/A'}\`\n` +
         `* **Reason(s):** \`${ruleScore.reason || 'N/A'}\`\n` +
         `* **Operation(s):** \`${ruleScore.operations || 'N/A'}\`\n` +
-        `* **Source Mapping Table Indices/Row(s): \`${ruleScore.table_idxs || 'N/A'}\`\n\n`;
+        `* **Source Mapping Table Indices/Row(s):** \`${ruleScore.table_idxs || 'N/A'}\`\n\n`;
 
     if (ruleScore.input_snippet || ruleScore.output_snippet) {
         block += `---\n### Source Code Snippet(s)\n\n`;
