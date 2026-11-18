@@ -49,9 +49,10 @@ function renderRuleBlock(ruleScore) {
 
     block += `---\n### Score & Detail\n\n` +
         `* **Confidence:** **${(ruleScore.score * 100).toFixed(1)}%** (\`${ruleScore.level}\`)\n` +
-        `* **Status:** \`${ruleScore.status || '<EMPTY>'}\`\n` +
-        `* **Reason(s):** \`${ruleScore.reason || '<EMPTY>'}\`\n` +
-        `* **Operation(s):** \`${ruleScore.operations || '<EMPTY>'}\`\n\n`;
+        `* **Status:** \`${ruleScore.status || 'N/A'}\`\n` +
+        `* **Reason(s):** \`${ruleScore.reason || 'N/A'}\`\n` +
+        `* **Operation(s):** \`${ruleScore.operations || 'N/A'}\`\n` +
+        `* **Source Mapping Table Indices/Row(s): \`${ruleScore.table_idxs || 'N/A'}\`\n\n`;
 
     if (ruleScore.input_snippet || ruleScore.output_snippet) {
         block += `---\n### Source Code Snippet(s)\n\n`;
