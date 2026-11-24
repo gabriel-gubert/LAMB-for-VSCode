@@ -169,7 +169,7 @@ async function activate(context) {
             const config = vscode.workspace.getConfiguration('lamb');
             const defaultThreshold = config.get('tasks.migration.summarizationThreshold', 2000);
             const currentVerbose = config.get('general.verbose', false);
-            const currentLogprobs = config.get('tasks.migration.logprobs', true);
+            const currentLogprobs = config.get('tasks.migration.logprobs', false);
 
             const currentSelection = editor.selection;
             const fullSourceCode = editor.document.getText();
