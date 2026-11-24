@@ -105,11 +105,12 @@ Note: You can remove a highlight by clicking the **Delete LAMB Highlight** CodeL
 5. If a snippet is selected, choose the migration scope:
   * **Migrate Selected Snippet Only**
   * **Migrate Full File (With Multi-Highlight Awareness)**
-6. Provide any optional user instructions or comments when prompted.
-7. A side-by-side Diff Preview editor will open:
+6. Select the **Source Code Language** (your active editor's language is automatically detected via Tree-sitter and pinned at the top, or choose any supported Tree-sitter language / **Auto-detect (LLM)** to omit `--language`).
+7. Provide any optional user instructions or comments when prompted.
+8. A side-by-side Diff Preview editor will open:
   * Green, yellow, and red gutter markers in the preview display rule confidence levels.
   * Hover over gutter indicators to view rule details, matched targets, logprob scores, and diagnostics.
-8. Click the **Accept Migration Changes** checkmark (`✓`) in the editor title bar to apply changes to the source file, or the **Discard Migration Changes** cross (`✗`) to cancel.
+9. Click the **Accept Migration Changes** checkmark (`✓`) in the editor title bar to apply changes to the source file, or the **Discard Migration Changes** cross (`✗`) to cancel.
 
 ---
 

@@ -11,6 +11,7 @@ const { ensureLambPythonEnv, runLambCli } = require('./cliRunner');
 const { updateEditorVisualHighlights } = require('./editorHighlights');
 const { loadMappingAliases } = require('./registryUtils');
 const { applyDiffConfidenceGutter } = require('./diffGutterHighlights');
+const { loadSupportedLanguages, detectEditorLanguage, buildLanguageQuickPickItems } = require('./languageUtils');
 
 // --- VSCode Output Channel ---
 const outputChannel = vscode.window.createOutputChannel('LAMB Output');
@@ -194,6 +195,14 @@ async function activate(context) {
                 }
             }
 
+            const supportedLanguages = await loadSupportedLanguages(outputChannel);
+            const detectedLanguage = await detectEditorLanguage(editor.document, supportedLanguages, outputChannel);
+            const languageItems = buildLanguageQuickPickItems(detectedLanguage, supportedLanguages);
+            const selectedLanguageItem = await vscode.window.showQuickPick(languageItems, {
+                placeHolder: 'Select Source Code Language (or Auto-detect with LAMB)'
+            });
+            if (!selectedLanguageItem) return;
+
             const developerComments = await vscode.window.showInputBox({ prompt: `Additional Comments/Instructions` });
             if (developerComments === undefined) return;
 
@@ -207,6 +216,7 @@ async function activate(context) {
                 '--summarization-threshold', defaultThreshold.toString(),
                 '--report', tempReportPath
             ];
+            if (selectedLanguageItem.language) cliArgs.push('--language', selectedLanguageItem.language);
             if (currentVerbose) cliArgs.push('--verbose');
             if (currentLogprobs) cliArgs.push('--logprobs');
 

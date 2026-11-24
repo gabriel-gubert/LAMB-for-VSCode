@@ -4,13 +4,26 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
-async function ensureLambPythonEnv(extensionPath) {
+function getLambEnvPaths() {
     const venvDir = path.join(os.homedir(), '.lamb', 'venv');
     const isWin = process.platform === 'win32';
-    
     const binDir = isWin ? path.join(venvDir, 'Scripts') : path.join(venvDir, 'bin');
-    const venvPython = path.join(binDir, isWin ? 'python.exe' : 'python');
+    const lambBin = path.join(binDir, isWin ? 'lamb.exe' : 'lamb');
+    const pythonExec = path.join(binDir, isWin ? 'python.exe' : 'python');
     const venvPip = path.join(binDir, isWin ? 'pip.exe' : 'pip');
+
+    const env = {
+        ...process.env,
+        PYTHONUNBUFFERED: '1',
+        VIRTUAL_ENV: venvDir,
+        PATH: `${binDir}${path.delimiter}${process.env.PATH || ''}`
+    };
+
+    return { venvDir, isWin, binDir, lambBin, pythonExec, venvPip, env };
+}
+
+async function ensureLambPythonEnv(extensionPath) {
+    const { venvDir, isWin, pythonExec: venvPython, venvPip } = getLambEnvPaths();
 
     if (fs.existsSync(venvPython)) {
         return venvDir;
@@ -71,12 +84,7 @@ async function ensureLambPythonEnv(extensionPath) {
  */
 async function runLambCli(cliArgs, outputChannel, options = {}) {
     const { stdinData, token, ...spawnOpts } = options;
-    const venvDir = path.join(os.homedir(), '.lamb', 'venv');
-    const isWin = process.platform === 'win32';
-
-    const binDir = isWin ? path.join(venvDir, 'Scripts') : path.join(venvDir, 'bin');
-    const lambBin = path.join(binDir, isWin ? 'lamb.exe' : 'lamb');
-    const pythonExec = path.join(binDir, isWin ? 'python.exe' : 'python');
+    const { venvDir, lambBin, pythonExec, env } = getLambEnvPaths();
 
     if (!fs.existsSync(venvDir)) {
         throw new Error("LAMB Python Environment at ~/.lamb/venv NOT FOUND. Reload Visual Studio Code.");
@@ -92,13 +100,6 @@ async function runLambCli(cliArgs, outputChannel, options = {}) {
         file = pythonExec;
         args = ['-u', '-m', 'lamb', ...cliArgs];
     }
-
-    const env = {
-        ...process.env,
-        PYTHONUNBUFFERED: '1',
-        VIRTUAL_ENV: venvDir,
-        PATH: `${binDir}${path.delimiter}${process.env.PATH || ''}`
-    };
 
     return new Promise((resolve, reject) => {
         const child = spawn(file, args, { ...spawnOpts, env });
@@ -150,7 +151,29 @@ async function runLambCli(cliArgs, outputChannel, options = {}) {
     });
 }
 
+/**
+ * Executes a short Python snippet inside ~/.lamb/venv without a shell.
+ */
+function runLambPythonCode(pythonCode, extraArgs = []) {
+    const { venvDir, pythonExec, env } = getLambEnvPaths();
+
+    if (!fs.existsSync(venvDir) || !fs.existsSync(pythonExec)) {
+        return Promise.reject(new Error('LAMB Python Environment at ~/.lamb/venv NOT FOUND. Reload Visual Studio Code.'));
+    }
+
+    return new Promise((resolve, reject) => {
+        execFile(pythonExec, ['-c', pythonCode, ...extraArgs], { env }, (error, stdout, stderr) => {
+            if (error) {
+                return reject(new Error(stderr ? stderr.trim() : error.message));
+            }
+            resolve((stdout || '').trim());
+        });
+    });
+}
+
 module.exports = {
     ensureLambPythonEnv,
-    runLambCli
+    runLambCli,
+    getLambEnvPaths,
+    runLambPythonCode
 };
