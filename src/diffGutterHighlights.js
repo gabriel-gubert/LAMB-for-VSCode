@@ -107,11 +107,11 @@ function applyDiffConfidenceGutter(editor, ruleScores) {
 
         if (ruleScore.range && typeof ruleScore.range === 'object') {
             startLine = Math.max(0, (ruleScore.range.start_line || 1) - 1);
-            startChar = Math.max(0, ruleScore.range.start_column || 0);
+            startChar = Math.max(0, (ruleScore.range.start_column || 1) - 1);
             endLine = Math.max(startLine, (ruleScore.range.end_line || (startLine + 1)) - 1);
-            
-            const rawEndChar = ruleScore.range.end_column !== undefined ? ruleScore.range.end_column : Number.MAX_SAFE_INTEGER;
-            endChar = (startLine === endLine && startChar === rawEndChar) ? startChar + 1 : rawEndChar;
+
+            const rawEndChar = ruleScore.range.end_column !== undefined ? ruleScore.range.end_column - 1 : Number.MAX_SAFE_INTEGER;
+            endChar = (startLine === endLine && startChar === rawEndChar) ? startChar : rawEndChar;
         } else if (ruleScore.lines && typeof ruleScore.lines === 'string') {
             const [sLine, eLine] = ruleScore.lines.split('-').map(n => parseInt(n, 10) - 1);
             if (isNaN(sLine)) continue;
@@ -139,6 +139,10 @@ function applyDiffConfidenceGutter(editor, ruleScores) {
     const lowRanges = [];
 
     for (const { range, rules } of groupedRules.values()) {
+        if (range.isEmpty) {
+            continue;
+        }
+
         let hoverContent = '';
 
         rules.forEach((ruleScore, idx) => {
