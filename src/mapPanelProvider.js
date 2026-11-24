@@ -108,6 +108,7 @@ class MapPanelProvider {
             alias, 
             output, 
             threadId,
+            scorer,
             multiAgent,
             resolverBatchSize,
             discoveryBatchSize,
@@ -127,6 +128,12 @@ class MapPanelProvider {
         if (output) cliArgs.push('--output', output);
         if (threadId) cliArgs.push('--thread-id', threadId);
         if (currentVerbose) cliArgs.push('--verbose');
+
+        if (scorer === 'zscore') {
+            cliArgs.push('--scorer', 'zscore');
+        } else if (scorer === 'softmax') {
+            cliArgs.push('--scorer', 'softmax');
+        }
 
         if (multiAgent === 'true') {
             cliArgs.push('--multi-agent');
@@ -273,6 +280,14 @@ class MapPanelProvider {
                 <summary>Execution Overrides</summary>
                 <div class="overrides-container">
                     <div class="field-group">
+                        <label>Scorer</label>
+                        <select id="scorer">
+                            <option value="default">Use Config Default</option>
+                            <option value="zscore">Z-Score</option>
+                            <option value="softmax">Softmax</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
                         <label>Multi-Agent Consensus</label>
                         <select id="multi_agent">
                             <option value="default">Use Config Default</option>
@@ -316,7 +331,7 @@ class MapPanelProvider {
                 const vscode = acquireVsCodeApi();
 
                 const inputIds = [
-                    'path_v1', 'path_v2', 'alias', 'output', 'thread_id',
+                    'path_v1', 'path_v2', 'alias', 'output', 'thread_id', 'scorer',
                     'multi_agent', 'resolver_batch_size', 'discovery_batch_size',
                     'stage_output_dir', 'checkpoint_database_path'
                 ];
@@ -395,6 +410,7 @@ class MapPanelProvider {
                         alias: document.getElementById('alias').value,
                         output: document.getElementById('output').value,
                         threadId: document.getElementById('thread_id').value,
+                        scorer: document.getElementById('scorer').value,
                         multiAgent: document.getElementById('multi_agent').value,
                         resolverBatchSize: document.getElementById('resolver_batch_size').value,
                         discoveryBatchSize: document.getElementById('discovery_batch_size').value,

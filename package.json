@@ -259,16 +259,22 @@
           "order": 24,
           "markdownDescription": "Temporary File(s) Directory."
         },
+        "lamb.tasks.mapping.scorer": {
+          "type": "string",
+          "default": "zscore",
+          "order": 25,
+          "markdownDescription": "Scorer for Target API Entity Candidate Pool Pruning."
+        },
         "lamb.tasks.migration.summarizationThreshold": {
           "type": "integer",
           "default": 2000,
-          "order": 25,
+          "order": 26,
           "markdownDescription": "Token Threshold for Summarization."
         },
         "lamb.general.litellm.agents.migration.detection": {
           "type": "boolean",
           "default": false,
-          "order": 26,
+          "order": 27,
           "markdownDescription": "Enable the LiteLLM Proxy Server for the Programming Language Detection Agent."
         },
         "lamb.tasks.migration.detection": {
@@ -276,13 +282,13 @@
           "additionalProperties": {
             "type": "string"
           },
-          "order": 27,
+          "order": 28,
           "markdownDescription": "Dynamic Key-Value Pairs for Programming Language Detection Agent Initialization Parameters (LangChain's `ChatOpenAI` Parameters + `requests_per_minute` and `tokens_per_minute`)."
         },
         "lamb.general.litellm.agents.migration.migration": {
           "type": "boolean",
           "default": false,
-          "order": 28,
+          "order": 29,
           "markdownDescription": "Enable the LiteLLM Proxy Server for the Migration Agent."
         },
         "lamb.tasks.migration.migration": {
@@ -290,13 +296,13 @@
           "additionalProperties": {
             "type": "string"
           },
-          "order": 29,
+          "order": 30,
           "markdownDescription": "Dynamic Key-Value Pairs for Primary Migration Agent Initialization Parameters (LangChain's `ChatOpenAI` Parameters + `requests_per_minute` and `tokens_per_minute`)."
         },
         "lamb.general.litellm.agents.migration.summarization": {
           "type": "boolean",
           "default": false,
-          "order": 30,
+          "order": 31,
           "markdownDescription": "Enable the LiteLLM Proxy Server for the Summarization Agent."
         },
         "lamb.tasks.migration.summarization": {
@@ -304,25 +310,25 @@
           "additionalProperties": {
             "type": "string"
           },
-          "order": 31,
+          "order": 32,
           "markdownDescription": "Dynamic Key-Value Pairs for Summarization Agent Initialization Parameters (LangChain's `ChatOpenAI` Parameters + `requests_per_minute` and `tokens_per_minute`)."
         },
         "lamb.tasks.migration.maxAttempts": {
           "type": "integer",
           "default": 3,
-          "order": 32,
+          "order": 33,
           "markdownDescription": "Maximum Number of Migration Attempts."
         },
         "lamb.tasks.migration.logprobs": {
           "type": "boolean",
           "default": true,
-          "order": 33,
+          "order": 34,
           "markdownDescription": "Enable Logprobs for Confidence Score Calculation."
         },
         "lamb.general.verbose": {
           "type": "boolean",
           "default": false,
-          "order": 34,
+          "order": 35,
           "markdownDescription": "Enable Verbose Output."
         }
       }
