@@ -267,14 +267,28 @@
         },
         "lamb.tasks.migration.summarizationThreshold": {
           "type": "integer",
-          "default": 2000,
+          "default": 2048,
           "order": 26,
           "markdownDescription": "Token Threshold for Summarization."
+        },
+        "lamb.general.litellm.agents.migration.analysis": {
+          "type": "boolean",
+          "default": false,
+          "order": 27,
+          "markdownDescription": "Enable the LiteLLM Proxy Server for the Analysis Agent."
+        },
+        "lamb.tasks.migration.analysis": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "order": 28,
+          "markdownDescription": "Dynamic Key-Value Pairs for Analysis Agent Initialization Parameters (LangChain's `ChatOpenAI` Parameters + `requests_per_minute` and `tokens_per_minute`)."
         },
         "lamb.general.litellm.agents.migration.detection": {
           "type": "boolean",
           "default": false,
-          "order": 27,
+          "order": 29,
           "markdownDescription": "Enable the LiteLLM Proxy Server for the Programming Language Detection Agent."
         },
         "lamb.tasks.migration.detection": {
@@ -282,13 +296,13 @@
           "additionalProperties": {
             "type": "string"
           },
-          "order": 28,
+          "order": 30,
           "markdownDescription": "Dynamic Key-Value Pairs for Programming Language Detection Agent Initialization Parameters (LangChain's `ChatOpenAI` Parameters + `requests_per_minute` and `tokens_per_minute`)."
         },
         "lamb.general.litellm.agents.migration.migration": {
           "type": "boolean",
           "default": false,
-          "order": 29,
+          "order": 31,
           "markdownDescription": "Enable the LiteLLM Proxy Server for the Migration Agent."
         },
         "lamb.tasks.migration.migration": {
@@ -296,13 +310,27 @@
           "additionalProperties": {
             "type": "string"
           },
-          "order": 30,
+          "order": 32,
           "markdownDescription": "Dynamic Key-Value Pairs for Primary Migration Agent Initialization Parameters (LangChain's `ChatOpenAI` Parameters + `requests_per_minute` and `tokens_per_minute`)."
+        },
+        "lamb.general.litellm.agents.migration.planning": {
+          "type": "boolean",
+          "default": false,
+          "order": 33,
+          "markdownDescription": "Enable the LiteLLM Proxy Server for the Planning Agent."
+        },
+        "lamb.tasks.migration.planning": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "order": 34,
+          "markdownDescription": "Dynamic Key-Value Pairs for Planning Agent Initialization Parameters (LangChain's `ChatOpenAI` Parameters + `requests_per_minute` and `tokens_per_minute`)."
         },
         "lamb.general.litellm.agents.migration.summarization": {
           "type": "boolean",
           "default": false,
-          "order": 31,
+          "order": 35,
           "markdownDescription": "Enable the LiteLLM Proxy Server for the Summarization Agent."
         },
         "lamb.tasks.migration.summarization": {
@@ -310,25 +338,25 @@
           "additionalProperties": {
             "type": "string"
           },
-          "order": 32,
+          "order": 36,
           "markdownDescription": "Dynamic Key-Value Pairs for Summarization Agent Initialization Parameters (LangChain's `ChatOpenAI` Parameters + `requests_per_minute` and `tokens_per_minute`)."
         },
         "lamb.tasks.migration.maxAttempts": {
           "type": "integer",
           "default": 3,
-          "order": 33,
+          "order": 37,
           "markdownDescription": "Maximum Number of Migration Attempts."
         },
         "lamb.tasks.migration.logprobs": {
           "type": "boolean",
           "default": true,
-          "order": 34,
+          "order": 38,
           "markdownDescription": "Enable Logprobs for Confidence Score Calculation."
         },
         "lamb.general.verbose": {
           "type": "boolean",
           "default": true,
-          "order": 35,
+          "order": 39,
           "markdownDescription": "Enable Verbose Output."
         }
       }
