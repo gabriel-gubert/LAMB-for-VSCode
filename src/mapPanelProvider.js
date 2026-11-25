@@ -5,7 +5,7 @@ const { runLambCli } = require('./cliRunner');
 class MapPanelProvider {
     constructor(extensionUri, outputChannel, context) {
         this._extensionUri = extensionUri;
-        this._outputChannel = outputChannel || vscode.window.createOutputChannel('LAMB Output');
+        this._outputChannel = outputChannel || vscode.window.createOutputChannel('LAMB Output', 'log');
         this._context = context;
         this._view = undefined;
         this._currentAbortController = null;

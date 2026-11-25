@@ -14,7 +14,7 @@ const { applyDiffConfidenceGutter } = require('./diffGutterHighlights');
 const { loadSupportedLanguages, detectEditorLanguage, buildLanguageQuickPickItems } = require('./languageUtils');
 
 // --- VSCode Output Channel ---
-const outputChannel = vscode.window.createOutputChannel('LAMB Output');
+const outputChannel = vscode.window.createOutputChannel('LAMB Output', 'log');
 
 // Global holder for active migration preview state
 let activeMigrationSession = null;

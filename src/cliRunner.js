@@ -3,6 +3,7 @@ const { execFile, spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const { stripAnsi, createStderrStreamLogger } = require('./outputLogger');
 
 function getLambEnvPaths() {
     const venvDir = path.join(os.homedir(), '.lamb', 'venv');
@@ -14,6 +15,7 @@ function getLambEnvPaths() {
 
     const env = {
         ...process.env,
+        NO_COLOR: '1',
         PYTHONUNBUFFERED: '1',
         VIRTUAL_ENV: venvDir,
         PATH: `${binDir}${path.delimiter}${process.env.PATH || ''}`
@@ -103,6 +105,7 @@ async function runLambCli(cliArgs, outputChannel, options = {}) {
 
     return new Promise((resolve, reject) => {
         const child = spawn(file, args, { ...spawnOpts, env });
+        const stderrLogger = createStderrStreamLogger(outputChannel);
 
         let stdoutData = '';
         let stderrData = '';
@@ -123,23 +126,25 @@ async function runLambCli(cliArgs, outputChannel, options = {}) {
             stdoutData += data.toString();
         });
 
-        // Stream stderr logs live to output channel
-        child.stderr.on('data', (data) => {
-            const chunk = data.toString();
-            stderrData += chunk;
-            if (outputChannel) {
-                outputChannel.append(chunk);
-            }
-        });
+        // Stream stderr logs live to output channel (line-buffered and ANSI-stripped)
+        if (child.stderr) {
+            child.stderr.setEncoding('utf8');
+            child.stderr.on('data', (chunk) => {
+                stderrData += chunk;
+                stderrLogger.write(chunk);
+            });
+        }
 
         child.on('error', (error) => reject(error));
 
         child.on('close', (code) => {
+            stderrLogger.flush();
             if (isCancelled) {
                 return resolve({ stdout: '', stderr: '', cancelled: true });
             }
             if (code !== 0) {
-                return reject(new Error(`Process EXITED with Code ${code}: ${stderrData}`));
+                const cleanStderr = stripAnsi(stderrData).trim();
+                return reject(new Error(`Process EXITED with Code ${code}: ${cleanStderr}`));
             }
             resolve({ stdout: stdoutData, stderr: stderrData, cancelled: false });
         });
@@ -164,7 +169,7 @@ function runLambPythonCode(pythonCode, extraArgs = []) {
     return new Promise((resolve, reject) => {
         execFile(pythonExec, ['-c', pythonCode, ...extraArgs], { env }, (error, stdout, stderr) => {
             if (error) {
-                return reject(new Error(stderr ? stderr.trim() : error.message));
+                return reject(new Error(stderr ? stripAnsi(stderr).trim() : error.message));
             }
             resolve((stdout || '').trim());
         });
